@@ -11,6 +11,15 @@ npm start                   # http://localhost:3000   (painel: /admin)
 ```
 Requer Node 20.6+. O administrador é criado na primeira execução com ADMIN_USER / ADMIN_PASSWORD.
 
+## Demo para cliente
+```bash
+npm install
+npm run demo
+# http://localhost:3000
+# painel admin: http://localhost:3000/admin
+```
+Use `DEMO_MODE=true` para mostrar dados ficcionais, manter a experiência profissional e evitar erros com ambiente real.
+
 ## Estrutura
 ```
 src/
@@ -46,3 +55,28 @@ Use HTTPS (Render, Railway, Fly.io ou VPS com Caddy/Nginx). Mantenha o volume `d
 ## Play Store
 Com o site em HTTPS: `npm i -g @bubblewrap/cli && bubblewrap init --manifest https://SEU-DOMINIO/manifest.webmanifest && bubblewrap build`,
 publique o .aab no Google Play Console e configure o Digital Asset Links (assetlinks.json) que o Bubblewrap indicar.
+
+## Publicação externa (opção recomendada)
+Para apresentar ao cliente fora do ambiente local, use uma plataforma com HTTPS e persistência simples:
+- Render
+- Railway
+- Fly.io
+- VPS + reverse proxy (Caddy/Nginx)
+
+Fluxo recomendado:
+1. Configure a variável `JWT_SECRET` e `ADMIN_PASSWORD` em ambiente da plataforma.
+2. Ajuste `PORT` e `DB_FILE` para um diretório persistente.
+3. Ative `DEMO_MODE=true` na demo pública.
+4. Publique o app com HTTPS.
+
+### Exemplo de deploy em Render
+- Build command: `npm install`
+- Start command: `node --env-file=.env src/server.js`
+- Configure as env vars em painel da plataforma.
+
+## Narrativa de venda para o cliente
+- Sistema de agendamento digital para barbearia
+- Redução de perda de clientes por ausência de confirmação
+- Controle interno de agenda e cliente do plano
+- Apresentação visual profissional em PWA
+- Base pronta para evoluir com cadastro, pagamento, CRM e notificações

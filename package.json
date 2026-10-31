@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node --env-file=.env src/server.js",
     "dev": "node --env-file=.env --watch src/server.js",
+    "demo": "node --env-file=.env.demo src/server.js",
     "test": "node --env-file=.env ./node_modules/vitest/vitest.mjs run"
   },
   "dependencies": {

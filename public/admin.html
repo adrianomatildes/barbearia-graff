@@ -12,9 +12,29 @@
 </head>
 <body>
 <div class="pole" aria-hidden="true"></div>
-<header>
-  <h1>Painel da barbearia</h1>
-  <p><a class="link" href="/">Voltar ao agendamento</a></p>
+<header class="admin-shell">
+  <div class="admin-brand-row">
+    <span class="brand-pill">Admin</span>
+  </div>
+  <h1>Painel da Barbearia Graff</h1>
+  <p class="admin-tagline">Gestão da agenda, clientes e horários</p>
+  <div class="brand-mark" aria-hidden="true">
+    <svg viewBox="0 0 340 200" role="presentation" aria-hidden="true">
+      <circle cx="170" cy="90" r="58" fill="none" stroke="currentColor" stroke-width="3.2" opacity="0.22"/>
+      <path d="M140 120c8-20 32-34 52-34 18 0 32 6 42 18 11 13 13 28 3 40-12 15-38 25-64 25-24 0-41-9-49-24-9-17-2-19 16-25Z" fill="none" stroke="currentColor" stroke-width="3" opacity="0.25"/>
+      <path d="M122 105l-18-18m80 18l18-18m-90 52l-16 16m106-16l16 16" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3" opacity="0.25">
+        <path d="M118 70h26v22h-26zM146 70h26v22h-26zM174 70h26v22h-26zM202 70h26v22h-26z"/>
+        <path d="M120 59l-26-18M216 59l26-18"/>
+        <path d="M170 38v66"/>
+        <path d="M112 134l-36 24M228 134l36 24"/>
+      </g>
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3.2" opacity="0.25">
+        <path d="M244 66l38-7M263 47l14 31M223 100l50-3"/>
+        <path d="M102 68l-38-7M78 49l-14 31M121 102l-50-3"/>
+      </g>
+    </svg>
+  </div>
 </header>
 <main><div id="app" aria-live="polite"></div></main>
 <script type="module" src="/js/admin.js"></script>

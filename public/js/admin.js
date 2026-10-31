@@ -13,9 +13,9 @@ const call = async (path, opts = {}) => {
 function logout() { sessionStorage.removeItem(TOKEN_KEY); token = null; renderLogin(); }
 
 function renderLogin(err = '') {
-  app.innerHTML = `<section><h2>Entrar</h2>
-    <div class="f"><label for="u">Usuário</label><input id="u" autocomplete="username"></div>
-    <div class="f"><label for="p">Senha</label><input id="p" type="password" autocomplete="current-password"></div>
+  app.innerHTML = `<section class="login-card"><h2>Entrar</h2>
+    <div class="f"><label for="u">Usuário</label><input id="u" autocomplete="username" value="admin" readonly></div>
+    <div class="f"><label for="p">Senha</label><input id="p" type="password" autocomplete="current-password" placeholder="Senha do painel"></div>
     <button class="cta" id="go">Entrar</button><p class="msg er" role="alert">${esc(err)}</p></section>`;
   const go = async () => {
     try {
@@ -31,7 +31,17 @@ function renderLogin(err = '') {
 async function renderPanel(msg = '') {
   const [list, subs] = await Promise.all([call(`/appointments?date=${dia}`), call('/subscribers')]);
   const total = list.reduce((t, a) => t + a.price_cents, 0);
-  app.innerHTML = `<section><h2>Agenda do dia</h2>
+  app.innerHTML = `<section class="agenda-panel">
+    <div class="panel-toolbar">
+      <div class="panel-title-wrap">
+        <span class="mini-label">Operação</span>
+        <h2>Agenda do dia</h2>
+      </div>
+      <div class="toolbar-actions">
+        <a class="toolbar-link" href="/" aria-label="Abrir agendamento">Agendamento</a>
+        <button class="toolbar-button secondary" id="out">Sair</button>
+      </div>
+    </div>
     <div class="f"><label for="dia">Dia</label><select id="dia">${dias.map((d) => `<option value="${d.date}" ${d.date === dia ? 'selected' : ''}>${WEEKDAYS[d.weekday]} ${shortDate(d.date)}</option>`).join('')}</select></div>
     <div class="sum"><span>${list.length} agendamento(s)</span><b>${brl(total)}</b></div>
     ${list.length ? list.map((a) => `<div class="appt"><div class="t">${hm(a.start)}</div>
@@ -39,12 +49,17 @@ async function renderPanel(msg = '') {
       <span>${esc(a.service)} · ${esc(a.barber)} · ${esc(a.phone)}</span></div>
       <button class="x" data-del="${a.id}" aria-label="Cancelar ${esc(a.name)}">Cancelar</button></div>`).join('')
       : '<p class="hint">Nenhum agendamento neste dia. Os novos aparecem aqui.</p>'}</section>
-  <section><h2>Clientes do plano</h2>
+  <section class="subscribers-panel">
+    <div class="panel-toolbar compact">
+      <div class="panel-title-wrap">
+        <span class="mini-label">Clientes</span>
+        <h2>Plano fidelidade</h2>
+      </div>
+    </div>
     ${subs.map((s) => `<div class="appt"><div class="i"><b>${esc(s.name)}</b><span>${esc(s.phone)}</span></div><button class="x" data-rm="${s.id}">Remover</button></div>`).join('') || '<p class="hint">Nenhum assinante cadastrado.</p>'}
     <div class="f" style="margin-top:12px"><label for="sn">Nome</label><input id="sn"></div>
     <div class="f"><label for="st">WhatsApp com DDD</label><input id="st" inputmode="tel"></div>
-    <button class="cta" id="add">Adicionar ao plano</button><p class="msg er" role="alert">${esc(msg)}</p></section>
-  <section><button class="x" id="out">Sair</button></section>`;
+    <button class="cta" id="add">Adicionar ao plano</button><p class="msg er" role="alert">${esc(msg)}</p></section>`;
   document.getElementById('dia').onchange = (e) => { dia = e.target.value; renderPanel(); };
   document.getElementById('out').onclick = logout;
   app.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => {
