@@ -75,3 +75,56 @@ export function getMonthlyMetrics(month) {
 
   return summary;
 }
+
+export function listServices() {
+  return db.prepare('SELECT id, name, price_cents, plan_price_cents, slots, active FROM services ORDER BY id').all();
+}
+
+export function createService({ name, price_cents, plan_price_cents, slots = 1, active = 1 }) {
+  const trimmed = String(name || '').trim();
+  if (!trimmed) throw new HttpError(400, 'Nome do serviço é obrigatório.');
+  const price = Number(price_cents ?? 0);
+  const planPrice = Number(plan_price_cents ?? 0);
+  const duration = Number(slots ?? 1);
+  if (!Number.isFinite(price) || price < 0) throw new HttpError(400, 'Preço inválido.');
+  if (!Number.isFinite(planPrice) || planPrice < 0) throw new HttpError(400, 'Preço do plano inválido.');
+  if (!Number.isFinite(duration) || duration < 1) throw new HttpError(400, 'Tempo do serviço inválido.');
+
+  const result = db.prepare(`
+    INSERT INTO services (name, price_cents, plan_price_cents, slots, active)
+    VALUES (?, ?, ?, ?, ?)
+  `).run(trimmed, Math.round(price), Math.round(planPrice), Math.round(duration), active ? 1 : 0);
+
+  return db.prepare('SELECT * FROM services WHERE id = ?').get(result.lastInsertRowid);
+}
+
+export function updateService(id, patch) {
+  const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(Number(id));
+  if (!existing) throw new HttpError(404, 'Serviço não encontrado.');
+
+  const updates = {
+    name: patch.name ?? existing.name,
+    price_cents: patch.price_cents ?? existing.price_cents,
+    plan_price_cents: patch.plan_price_cents ?? existing.plan_price_cents,
+    slots: patch.slots ?? existing.slots,
+    active: patch.active ?? existing.active,
+  };
+
+  if (!String(updates.name).trim()) throw new HttpError(400, 'Nome do serviço é obrigatório.');
+  if (Number(updates.price_cents) < 0 || Number(updates.plan_price_cents) < 0 || Number(updates.slots) < 1) {
+    throw new HttpError(400, 'Dados do serviço inválidos.');
+  }
+
+  db.prepare(`
+    UPDATE services
+    SET name = ?, price_cents = ?, plan_price_cents = ?, slots = ?, active = ?
+    WHERE id = ?
+  `).run(String(updates.name).trim(), Number(updates.price_cents), Number(updates.plan_price_cents), Number(updates.slots), Number(updates.active), Number(id));
+
+  return db.prepare('SELECT * FROM services WHERE id = ?').get(Number(id));
+}
+
+export function deleteService(id) {
+  const info = db.prepare('UPDATE services SET active = 0 WHERE id = ?').run(Number(id));
+  if (!info.changes) throw new HttpError(404, 'Serviço não encontrado.');
+}

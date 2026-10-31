@@ -3,7 +3,19 @@ import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAdmin } from '../middleware/auth.js';
-import { authenticateAdmin, listAppointmentsByDate, cancelAppointment, listSubscribers, saveSubscriber, deleteSubscriber, getMonthlyMetrics } from '../services/admin.js';
+import {
+  authenticateAdmin,
+  listAppointmentsByDate,
+  cancelAppointment,
+  listSubscribers,
+  saveSubscriber,
+  deleteSubscriber,
+  getMonthlyMetrics,
+  listServices,
+  createService,
+  updateService,
+  deleteService,
+} from '../services/admin.js';
 
 export const adminRoutes = Router();
 
@@ -69,4 +81,35 @@ adminRoutes.get('/clients', (req, res) => {
     ORDER BY a.date DESC, a.start DESC
   `).all(type ? [type] : []);
   res.json(rows);
+});
+
+adminRoutes.get('/services', (req, res) => {
+  res.json(listServices());
+});
+
+adminRoutes.post('/services', (req, res) => {
+  const body = z.object({
+    name: z.string().trim().min(2, 'Digite o nome do serviço.').max(80),
+    price_cents: z.number().int().min(0),
+    plan_price_cents: z.number().int().min(0),
+    slots: z.number().int().min(1).max(8).default(1),
+    active: z.boolean().optional(),
+  }).parse(req.body);
+  res.status(201).json(createService(body));
+});
+
+adminRoutes.put('/services/:id', (req, res) => {
+  const body = z.object({
+    name: z.string().trim().min(2, 'Digite o nome do serviço.').max(80).optional(),
+    price_cents: z.number().int().min(0).optional(),
+    plan_price_cents: z.number().int().min(0).optional(),
+    slots: z.number().int().min(1).max(8).optional(),
+    active: z.boolean().optional(),
+  }).parse(req.body);
+  res.json(updateService(req.params.id, body));
+});
+
+adminRoutes.delete('/services/:id', (req, res) => {
+  deleteService(req.params.id);
+  res.status(204).end();
 });
