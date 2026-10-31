@@ -12,6 +12,7 @@ export const config = {
   jwtSecret: get('JWT_SECRET'),
   adminUser: get('ADMIN_USER', 'admin'),
   adminPassword: get('ADMIN_PASSWORD'),
+  demoMode: String(process.env.DEMO_MODE ?? 'false').toLowerCase() === 'true',
   openMinutes: 8 * 60,
   closeMinutes: 21 * 60,
   stepMinutes: 30,

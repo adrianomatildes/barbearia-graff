@@ -10,6 +10,35 @@ export const db = new Database(config.dbFile);
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
+const runSeed = () => {
+  if (!db.prepare('SELECT 1 FROM services LIMIT 1').get()) {
+    const ins = db.prepare('INSERT INTO services (name, price_cents, plan_price_cents, slots) VALUES (?,?,?,?)');
+    ins.run('Corte', 4500, 0, 1);
+    ins.run('Barba', 3500, 1750, 1);
+    ins.run('Corte + barba', 7000, 1750, 2);
+  }
+
+  const barbers = db.prepare('SELECT id, name FROM barbers ORDER BY id').all();
+  const felipeId = barbers.find((b) => b.name === 'Felipe')?.id;
+
+  if (felipeId === undefined) {
+    const firstId = barbers[0]?.id;
+    if (firstId !== undefined) {
+      db.prepare('UPDATE barbers SET name = ?, active = 1 WHERE id = ?').run('Felipe', firstId);
+      db.prepare('UPDATE barbers SET active = 0 WHERE id != ?').run(firstId);
+    } else {
+      db.prepare('INSERT INTO barbers (name) VALUES (?)').run('Felipe');
+    }
+  } else {
+    db.prepare('UPDATE barbers SET active = (id = ?) WHERE id IS NOT NULL').run(felipeId);
+  }
+
+  if (!db.prepare('SELECT 1 FROM users LIMIT 1').get()) {
+    db.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)')
+      .run(config.adminUser, bcrypt.hashSync(config.adminPassword, 12));
+  }
+};
+
 db.exec(`
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY,
@@ -52,30 +81,17 @@ CREATE TABLE IF NOT EXISTS appointments (
 CREATE INDEX IF NOT EXISTS idx_appt_lookup ON appointments (barber_id, date, status);
 `);
 
-// Dados iniciais (somente se as tabelas estiverem vazias)
-if (!db.prepare('SELECT 1 FROM services LIMIT 1').get()) {
-  const ins = db.prepare('INSERT INTO services (name, price_cents, plan_price_cents, slots) VALUES (?,?,?,?)');
-  ins.run('Corte', 4500, 0, 1);
-  ins.run('Barba', 3500, 1750, 1);
-  ins.run('Corte + barba', 7000, 1750, 2);
-}
-
-const barbers = db.prepare('SELECT id, name FROM barbers ORDER BY id').all();
-const felipeId = barbers.find((b) => b.name === 'Felipe')?.id;
-
-if (felipeId === undefined) {
-  const firstId = barbers[0]?.id;
-  if (firstId !== undefined) {
-    db.prepare('UPDATE barbers SET name = ?, active = 1 WHERE id = ?').run('Felipe', firstId);
-    db.prepare('UPDATE barbers SET active = 0 WHERE id != ?').run(firstId);
-  } else {
-    db.prepare('INSERT INTO barbers (name) VALUES (?)').run('Felipe');
+if (config.demoMode) {
+  runSeed();
+  const demoAppointments = db.prepare('SELECT 1 FROM appointments LIMIT 1').get();
+  if (!demoAppointments) {
+    const barber = db.prepare('SELECT id FROM barbers WHERE active = 1 ORDER BY id LIMIT 1').get();
+    const service = db.prepare('SELECT id FROM services WHERE active = 1 ORDER BY id LIMIT 1').get();
+    const date = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    db.prepare(`INSERT INTO appointments (barber_id, service_id, date, start, end, name, phone, type, price_cents)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .run(barber.id, service.id, date, 540, 570, 'Cliente Demo', '48999999999', 'avulso', 4500);
   }
 } else {
-  db.prepare('UPDATE barbers SET active = (id = ?) WHERE id IS NOT NULL').run(felipeId);
-}
-
-if (!db.prepare('SELECT 1 FROM users LIMIT 1').get()) {
-  db.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)')
-    .run(config.adminUser, bcrypt.hashSync(config.adminPassword, 12));
+  runSeed();
 }
