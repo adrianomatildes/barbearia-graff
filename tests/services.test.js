@@ -13,8 +13,10 @@ const seed = () => {
 
 const validDate = () => {
   const cfg = getShopConfig();
-  const today = new Date().toISOString().slice(0, 10);
-  return cfg.days.find((d) => d.date >= today)?.date ?? new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const today = new Date();
+  const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000)
+    .toISOString().slice(0, 10);
+  return cfg.days.find((d) => d.date >= tomorrow)?.date ?? tomorrow;
 };
 
 describe('Serviços do MVP', () => {

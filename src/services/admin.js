@@ -41,3 +41,37 @@ export function saveSubscriber({ name, phone }) {
 export function deleteSubscriber(id) {
   db.prepare('DELETE FROM subscribers WHERE id = ?').run(Number(id));
 }
+
+export function getMonthlyMetrics(month) {
+  const rows = db.prepare(`
+    SELECT type, COUNT(*) AS count, SUM(price_cents) AS revenue
+    FROM appointments
+    WHERE status = 'confirmed' AND strftime('%Y-%m', date) = ?
+    GROUP BY type
+  `).all(month);
+
+  const summary = {
+    month,
+    appointments: 0,
+    revenue: 0,
+    planAppointments: 0,
+    avulsoAppointments: 0,
+    planRevenue: 0,
+    avulsoRevenue: 0,
+  };
+
+  for (const row of rows) {
+    const isPlan = row.type === 'plano';
+    summary.appointments += Number(row.count);
+    summary.revenue += Number(row.revenue || 0);
+    if (isPlan) {
+      summary.planAppointments = Number(row.count);
+      summary.planRevenue = Number(row.revenue || 0);
+    } else {
+      summary.avulsoAppointments = Number(row.count);
+      summary.avulsoRevenue = Number(row.revenue || 0);
+    }
+  }
+
+  return summary;
+}
