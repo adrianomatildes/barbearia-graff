@@ -25,7 +25,8 @@ app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: true,
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
-app.get('/', (req, res) => res.redirect('/admin'));
+app.get('/', (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(publicDir, 'admin.html')));
 app.use('/api/admin', adminRoutes);
 app.use('/api', publicRoutes);
 app.use('/api', (req, res) => res.status(404).json({ error: 'Rota não encontrada.' }));
