@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import path from 'node:path';
 import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yaml';
 import { config } from './config.js';
@@ -32,4 +32,10 @@ app.use('/api', (req, res) => res.status(404).json({ error: 'Rota não encontrad
 app.use(express.static(publicDir, { extensions: ['html'] }));
 app.use(errorHandler);
 
-app.listen(config.port, () => console.log(`Barbearia rodando em http://localhost:${config.port}`));
+export const startServer = (port = config.port) => app.listen(port, () => console.log(`Barbearia rodando em http://localhost:${port}`));
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  startServer();
+}
+
+export { app };

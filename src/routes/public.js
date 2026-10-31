@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { db } from '../db.js';
-import { config } from '../config.js';
-import { bookableDays, getAvailability, createAppointment } from '../services/scheduling.js';
+import { getShopConfig } from '../services/config.js';
+import { listAvailability } from '../services/availability.js';
+import { createAppointment } from '../services/appointments.js';
 
 export const publicRoutes = Router();
 
@@ -11,12 +11,7 @@ const phone = z.string().transform((v) => v.replace(/\D/g, ''))
   .pipe(z.string().min(10, 'Digite o WhatsApp com DDD.').max(13, 'Telefone inválido.'));
 
 publicRoutes.get('/config', (req, res) => {
-  res.json({
-    services: db.prepare('SELECT id, name, price_cents, plan_price_cents, slots FROM services WHERE active = 1').all(),
-    barbers: db.prepare('SELECT id, name FROM barbers WHERE active = 1').all(),
-    days: bookableDays(),
-    hours: { open: config.openMinutes, close: config.closeMinutes, step: config.stepMinutes },
-  });
+  res.json(getShopConfig());
 });
 
 publicRoutes.get('/availability', (req, res) => {
@@ -25,7 +20,7 @@ publicRoutes.get('/availability', (req, res) => {
     barberId: z.coerce.number().int().positive(),
     serviceId: z.coerce.number().int().positive(),
   }).parse(req.query);
-  res.json(getAvailability(q));
+  res.json(listAvailability(q));
 });
 
 publicRoutes.post('/appointments', (req, res) => {
