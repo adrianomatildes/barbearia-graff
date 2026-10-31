@@ -11,14 +11,58 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
+<body class="landing-page">
 <div class="pole" aria-hidden="true"></div>
-<header>
-  <h1>Barbearia Graff</h1>
-  <p>Estilo, organização e agendamento rápido.</p>
+<header class="home-hero">
+  <nav class="home-topbar">
+    <div class="brand-lockup">
+      <span class="brand-mark-mini">BG</span>
+      <span>Barbearia Graff</span>
+    </div>
+    <a class="link-btn secondary" href="/admin">Área da barbearia</a>
+  </nav>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow">Estilo, organização e agendamento inteligente</span>
+      <h1>Seu próximo corte começa aqui.</h1>
+      <p>Agendamento rápido, atendimento premium e gestão simples para a barbearia.</p>
+      <div class="hero-actions">
+        <a class="primary-btn" href="#app">Agendar agora</a>
+        <a class="secondary-btn" href="/admin">Painel admin</a>
+      </div>
+      <ul class="hero-stats">
+        <li><strong>2 min</strong><span>para agendar</span></li>
+        <li><strong>+2h</strong><span>econômicas</span></li>
+        <li><strong>1 app</strong><span>para gestão</span></li>
+      </ul>
+    </div>
+
+    <aside class="hero-card" aria-label="Resumo do serviço">
+      <div class="mini-header">
+        <span>Agenda premium</span>
+        <span class="status-dot">Ao vivo</span>
+      </div>
+      <div class="service-highlight">
+        <h3>Barba + Corte</h3>
+        <p>Agendamento em poucos cliques e disponibilidade real do dia.</p>
+      </div>
+      <div class="mini-metrics">
+        <div>
+          <small>Horários</small>
+          <strong>08:00–19:00</strong>
+        </div>
+        <div>
+          <small>Profissional</small>
+          <strong>Felipe</strong>
+        </div>
+      </div>
+    </aside>
+  </div>
 </header>
-<main><div id="app" aria-live="polite">Carregando…</div></main>
-<p class="top"><a class="link" href="/admin">Área da barbearia</a></p>
+<main>
+  <div id="app" aria-live="polite">Carregando…</div>
+</main>
 <script type="module" src="/js/client.js"></script>
 </body>
 </html>

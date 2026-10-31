@@ -134,7 +134,12 @@ async function renderPanel(msg = '') {
       </div>
     </div>
 
-    ${clientRows.length ? clientRows.map((s) => `<div class="appt"><div class="i"><b>${esc(s.name)}</b><span>${esc(s.phone || s.date || '')}</span></div><button class="x" data-rm="${s.id || ''}" ${clientFilter === 'avulso' ? 'data-avulso="true"' : ''}>${clientFilter === 'plano' ? 'Remover' : 'Detalhes'}</button></div>`).join('') : '<p class="hint">Nenhum cliente neste segmento.</p>'}
+    ${clientRows.length ? clientRows.map((s) => {
+      if (clientFilter === 'plano') {
+        return `<div class="appt client-row"><div class="i"><b>${esc(s.name)}</b><span>${esc(s.phone || s.date || '')}</span></div><button class="x" data-rm="${s.id || ''}">Remover</button></div>`;
+      }
+      return `<div class="appt client-row"><div class="i"><b>${esc(s.name)}</b><span>${esc(s.phone || s.date || '')}</span></div><div class="client-actions"><button class="x" data-rm="${s.id || ''}" data-action="details">Detalhes</button><button class="x danger" data-rm="${s.id || ''}" data-action="delete">Excluir</button></div></div>`;
+    }).join('') : '<p class="hint">Nenhum cliente neste segmento.</p>'}
 
     ${clientFilter === 'plano' ? `<div class="f" style="margin-top:12px"><label for="sn">Nome</label><input id="sn"></div>
     <div class="f"><label for="st">WhatsApp com DDD</label><input id="st" inputmode="tel"></div>
@@ -162,7 +167,12 @@ async function renderPanel(msg = '') {
     renderPanel();
   };
 
-  document.getElementById('out').onclick = logout;
+  document.querySelectorAll('[data-subscriber-type]').forEach((btn) => {
+    btn.onclick = () => {
+      subscriberType = btn.dataset.subscriberType;
+      renderPanel();
+    };
+  });
 
   document.querySelectorAll('[data-client-filter]').forEach((btn) => {
     btn.onclick = () => {
@@ -178,11 +188,19 @@ async function renderPanel(msg = '') {
   });
 
   app.querySelectorAll('[data-rm]').forEach((b) => b.onclick = async () => {
+    const action = b.dataset.action || 'default';
     const item = (clientFilter === 'plano')
       ? subs.find((s) => String(s.id) === String(b.dataset.rm))
       : avulso.find((s) => String(s.id) === String(b.dataset.rm));
 
     if (clientFilter === 'plano') {
+      await call(`/subscribers/${b.dataset.rm}`, { method: 'DELETE' });
+      renderPanel();
+      return;
+    }
+
+    if (action === 'delete') {
+      if (!window.confirm(`Excluir ${item?.name || 'este cliente'}?`)) return;
       await call(`/subscribers/${b.dataset.rm}`, { method: 'DELETE' });
       renderPanel();
       return;
