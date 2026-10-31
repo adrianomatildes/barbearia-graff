@@ -6,6 +6,7 @@ let token = sessionStorage.getItem(TOKEN_KEY);
 let dias = [];
 let dia = null;
 let clientFilter = 'plano';
+let subscriberType = 'plano';
 let currentMonth = new Date().toISOString().slice(0, 7);
 let currentView = 'agenda';
 
