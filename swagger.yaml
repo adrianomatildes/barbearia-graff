@@ -1,0 +1,226 @@
+openapi: 3.0.3
+info:
+  title: Barbearia Graff API
+  version: 1.0.0
+  description: API para agendamento, agenda administrativa e gestão de clientes
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /health:
+    get:
+      summary: Verifica se a API está online
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                status: ok
+
+  /config:
+    get:
+      summary: Retorna serviços, profissionais e dias abertos
+      responses:
+        '200':
+          description: Configuração da barbearia
+          content:
+            application/json:
+              example:
+                services:
+                  - id: 1
+                    name: Corte
+                    price_cents: 4500
+                    plan_price_cents: 0
+                    slots: 1
+                barbers:
+                  - id: 1
+                    name: Felipe
+                days:
+                  - date: "2026-11-01"
+
+  /availability:
+    get:
+      summary: Retorna horários disponíveis
+      parameters:
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            example: "2026-11-01"
+        - in: query
+          name: barberId
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: serviceId
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Horários disponíveis
+          content:
+            application/json:
+              example:
+                - start: 540
+                  free: true
+                - start: 570
+                  free: false
+
+  /appointments:
+    post:
+      summary: Cria um novo agendamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - serviceId
+                - barberId
+                - date
+                - start
+                - name
+                - phone
+                - type
+              properties:
+                serviceId:
+                  type: integer
+                  example: 1
+                barberId:
+                  type: integer
+                  example: 1
+                date:
+                  type: string
+                  example: "2026-11-01"
+                start:
+                  type: integer
+                  example: 540
+                name:
+                  type: string
+                  example: "Maria"
+                phone:
+                  type: string
+                  example: "48999998888"
+                type:
+                  type: string
+                  enum: [avulso, plano]
+                  example: avulso
+      responses:
+        '201':
+          description: Agendamento criado com sucesso
+        '400':
+          description: Dados inválidos
+        '409':
+          description: Conflito de horário
+
+  /admin/login:
+    post:
+      summary: Login do painel administrativo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: senha123
+      responses:
+        '200':
+          description: Token JWT gerado
+          content:
+            application/json:
+              example:
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '401':
+          description: Credenciais inválidas
+
+  /admin/appointments:
+    get:
+      summary: Lista agendamentos do dia
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            example: "2026-11-01"
+      responses:
+        '200':
+          description: Lista de agendamentos
+        '401':
+          description: Não autorizado
+
+  /admin/appointments/{id}:
+    delete:
+      summary: Cancela um agendamento
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Agendamento cancelado com sucesso
+        '404':
+          description: Agendamento não encontrado
+
+  /admin/subscribers:
+    get:
+      summary: Lista clientes do plano
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de assinantes
+    post:
+      summary: Cria ou atualiza um assinante
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - phone
+              properties:
+                name:
+                  type: string
+                  example: "João Silva"
+                phone:
+                  type: string
+                  example: "48999998888"
+      responses:
+        '201':
+          description: Assinante salvo
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

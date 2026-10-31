@@ -2,7 +2,10 @@ import express from 'express';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import path from 'node:path';
+import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yaml';
 import { config } from './config.js';
 import './db.js';
 import { publicRoutes } from './routes/public.js';
@@ -11,11 +14,15 @@ import { errorHandler } from './middleware/errors.js';
 
 const app = express();
 const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public');
+const swaggerPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'swagger.yaml');
+const swaggerDocument = YAML.parse(fs.readFileSync(swaggerPath, 'utf8'));
 
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
 app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: true, legacyHeaders: false }));
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/admin', adminRoutes);
