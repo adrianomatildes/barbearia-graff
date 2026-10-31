@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS subscribers (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   phone TEXT NOT NULL UNIQUE,
+  type TEXT NOT NULL DEFAULT 'plano' CHECK (type IN ('plano','avulso')),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS appointments (
@@ -80,6 +81,15 @@ CREATE TABLE IF NOT EXISTS appointments (
 );
 CREATE INDEX IF NOT EXISTS idx_appt_lookup ON appointments (barber_id, date, status);
 `);
+
+const ensureSubscriberTypeColumn = () => {
+  const columns = db.prepare('PRAGMA table_info(subscribers)').all();
+  if (!columns.some((col) => col.name === 'type')) {
+    db.exec("ALTER TABLE subscribers ADD COLUMN type TEXT NOT NULL DEFAULT 'plano' CHECK (type IN ('plano','avulso'));");
+  }
+};
+
+ensureSubscriberTypeColumn();
 
 if (config.demoMode) {
   runSeed();

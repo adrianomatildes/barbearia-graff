@@ -56,23 +56,34 @@ function render() {
   const sv = S.serv ? service() : null;
   const free = S.slots.some((x) => x.free);
   app.innerHTML = `
-  <section><h2>Você é cliente do plano?</h2><div class="row">
-    <button class="chip" data-k="tipo" data-v="avulso" aria-pressed="${S.tipo === 'avulso'}">Avulso<small>Pago por serviço</small></button>
-    <button class="chip" data-k="tipo" data-v="plano" aria-pressed="${S.tipo === 'plano'}">Sou do plano<small>Corte incluso, barba com 50%</small></button></div></section>
-  <section><h2>Serviço</h2><div class="row">${S.cfg.services.map((s) => `
-    <button class="chip" data-k="serv" data-v="${s.id}" aria-pressed="${S.serv === s.id}">${esc(s.name)}<small>${price(s) ? brl(price(s)) : 'Incluso'} · ${s.slots * S.cfg.hours.step} min</small></button>`).join('')}</div></section>
-  <section><h2>Profissional</h2><div class="row">${S.cfg.barbers.map((b) => `
-    <button class="chip" data-k="barb" data-v="${b.id}" aria-pressed="${S.barb === b.id}">${esc(b.name)}</button>`).join('')}</div></section>
-  <section><h2>Escolha o dia</h2>${calendar()}<p class="hint">${S.dia ? `Dia escolhido: <b>${new Date(`${S.dia}T12:00:00`).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</b>. ` : ''}Domingo fechado.</p></section>
-  <section><h2>Horário</h2>${sv ? `<div class="row slots">${S.slots.map((x) => `
-    <button class="chip" data-k="hora" data-v="${x.start}" ${x.free ? '' : 'disabled'} aria-pressed="${S.hora === x.start}">${hm(x.start)}</button>`).join('')}</div>
-    ${free ? '' : '<p class="hint">Sem horários livres neste dia. Escolha outro dia ou profissional.</p>'}` : '<p class="hint">Escolha um serviço para ver os horários livres.</p>'}</section>
-  <section><h2>Seus dados</h2>
-    <div class="f"><label for="nome">Nome</label><input id="nome" autocomplete="name" value="${esc(S.nome)}"></div>
-    <div class="f"><label for="tel">WhatsApp com DDD</label><input id="tel" inputmode="tel" autocomplete="tel" placeholder="(48) 99999-0000" value="${esc(S.tel)}"></div>
-    <div class="sum"><span>Total</span><b>${sv ? brl(price(sv)) : '–'}</b></div>
-    <button class="cta" id="ok" ${sv && S.hora !== null ? '' : 'disabled'}>Confirmar horário</button>
-    <p class="msg er" role="alert">${esc(S.err)}</p></section>`;
+  <div class="booking-shell">
+    <section class="step-card"><h2>Você é cliente do plano?</h2><div class="choice-row">
+      <button class="choice-card ${S.tipo === 'avulso' ? 'active' : ''}" data-k="tipo" data-v="avulso" aria-pressed="${S.tipo === 'avulso'}">
+        <span>Avulso</span>
+        <small>Pago por serviço</small>
+      </button>
+      <button class="choice-card ${S.tipo === 'plano' ? 'active' : ''}" data-k="tipo" data-v="plano" aria-pressed="${S.tipo === 'plano'}">
+        <span>Sou do plano</span>
+        <small>Corte incluso</small>
+      </button></div></section>
+    <section class="step-card"><h2>Serviço</h2><div class="choice-row service-grid">${S.cfg.services.map((s) => `
+      <button class="choice-card service-card ${S.serv === s.id ? 'active' : ''}" data-k="serv" data-v="${s.id}" aria-pressed="${S.serv === s.id}">
+        <span>${esc(s.name)}</span>
+        <small>${price(s) ? brl(price(s)) : 'Incluso'} · ${s.slots * S.cfg.hours.step} min</small>
+      </button>`).join('')}</div></section>
+    <section class="step-card"><h2>Profissional</h2><div class="choice-row barber-grid">${S.cfg.barbers.map((b) => `
+      <button class="choice-card barber-card ${S.barb === b.id ? 'active' : ''}" data-k="barb" data-v="${b.id}" aria-pressed="${S.barb === b.id}">${esc(b.name)}</button>`).join('')}</div></section>
+    <section class="step-card"><h2>Escolha o dia</h2>${calendar()}<p class="hint">${S.dia ? `Dia escolhido: <b>${new Date(`${S.dia}T12:00:00`).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</b>. ` : ''}Domingo fechado.</p></section>
+    <section class="step-card"><h2>Horário</h2>${sv ? `<div class="slot-grid">${S.slots.map((x) => `
+      <button class="slot-chip ${x.free ? '' : 'disabled'} ${S.hora === x.start ? 'active' : ''}" data-k="hora" data-v="${x.start}" ${x.free ? '' : 'disabled'} aria-pressed="${S.hora === x.start}">${hm(x.start)}</button>`).join('')}</div>
+      ${free ? '' : '<p class="hint">Sem horários livres neste dia. Escolha outro dia ou profissional.</p>'}` : '<p class="hint">Escolha um serviço para ver os horários livres.</p>'}</section>
+    <section class="step-card"><h2>Seus dados</h2>
+      <div class="f"><label for="nome">Nome</label><input id="nome" autocomplete="name" value="${esc(S.nome)}"></div>
+      <div class="f"><label for="tel">WhatsApp com DDD</label><input id="tel" inputmode="tel" autocomplete="tel" placeholder="(48) 99999-0000" value="${esc(S.tel)}"></div>
+      <div class="booking-summary"><span>Total</span><b>${sv ? brl(price(sv)) : '–'}</b></div>
+      <button class="cta" id="ok" ${sv && S.hora !== null ? '' : 'disabled'}>Confirmar horário</button>
+      <p class="msg er" role="alert">${esc(S.err)}</p></section>
+  </div>`;
   app.querySelectorAll('[data-k]').forEach((b) => {
     b.onclick = () => {
       const k = b.dataset.k, v = b.dataset.v;

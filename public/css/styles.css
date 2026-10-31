@@ -491,3 +491,353 @@ main {
     grid-template-columns: 1fr;
   }
 }
+
+.services-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.58), rgba(245,239,232,0.92));
+}
+
+.service-form-box,
+.service-list-box {
+  margin-top: 18px;
+  padding: 18px 18px 12px;
+  border: 1px solid rgba(122,116,110,0.14);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.32);
+}
+
+.service-form-box h3,
+.service-list-box h3 {
+  margin: 0 0 14px;
+  font-size: 1.4rem;
+  letter-spacing: -0.04em;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+}
+
+.service-grid .f {
+  margin-bottom: 0;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(122,116,110,0.12);
+}
+
+.service-item:first-of-type {
+  border-top: 0;
+}
+
+.service-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.service-copy strong {
+  font-size: 1.06rem;
+}
+
+.service-copy span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.service-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.x.danger {
+  border-color: rgba(153, 55, 55, 0.28);
+  color: #8d3d3d;
+}
+
+.service-list-box.muted {
+  margin-top: 14px;
+}
+
+.service-item.compact {
+  padding-top: 10px;
+}
+
+.hint {
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .service-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+.booking-shell {
+  display: grid;
+  gap: 22px;
+}
+
+.step-card {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 22px 20px 18px;
+  border: 1px solid rgba(122,116,110,0.12);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(247,241,235,0.9));
+  box-shadow: 0 18px 40px rgba(17,13,10,0.06);
+}
+
+.choice-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.choice-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-height: 92px;
+  padding: 18px 16px;
+  border: 1px solid rgba(122,116,110,0.18);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.36);
+  color: var(--tx);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.choice-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(199,155,91,0.55);
+  box-shadow: 0 12px 20px rgba(17,13,10,0.04);
+}
+
+.choice-card.active {
+  background: linear-gradient(135deg, rgba(23,23,23,0.96), rgba(199,155,91,0.88));
+  color: #fff;
+  border-color: transparent;
+}
+
+.choice-card span {
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.choice-card small {
+  opacity: 0.82;
+  font-size: 0.9rem;
+}
+
+.service-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.service-card {
+  min-height: 106px;
+}
+
+.barber-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.barber-card {
+  align-items: center;
+  justify-content: center;
+  min-height: 74px;
+}
+
+.cal {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(122,116,110,0.12);
+}
+
+.cal-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cal-h b {
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+}
+
+.cal-g {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  text-align: center;
+}
+
+.cal-g small {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.day {
+  min-height: 48px;
+  padding: 8px 4px;
+  border: 1px solid rgba(122,116,110,0.18);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.22);
+  color: var(--tx);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.day:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.day[aria-pressed="true"] {
+  background: linear-gradient(135deg, rgba(23,23,23,0.96), rgba(199,155,91,0.9));
+  color: #fff;
+  border-color: transparent;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.slot-chip {
+  min-height: 54px;
+  border: 1px solid rgba(122,116,110,0.18);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.36);
+  color: var(--tx);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.slot-chip.active {
+  background: linear-gradient(135deg, rgba(23,23,23,0.96), rgba(199,155,91,0.88));
+  color: #fff;
+  border-color: transparent;
+}
+
+.slot-chip.disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.booking-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0 18px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(122,116,110,0.12);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.done {
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .step-card {
+    padding: 18px 14px;
+  }
+
+  .choice-row,
+  .service-grid,
+  .barber-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cal-g {
+    gap: 6px;
+  }
+
+  .day {
+    min-height: 42px;
+  }
+
+  .slot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cta {
+    font-size: 1.3rem;
+  }
+}
+
+.type-selector {
+  margin: 12px 0 18px;
+}
+
+.type-label {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.type-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.type-chip {
+  min-height: 54px;
+  border: 1px solid rgba(122,116,110,0.18);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.36);
+  color: var(--tx);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.type-chip.active {
+  background: linear-gradient(135deg, rgba(23,23,23,0.96), rgba(199,155,91,0.88));
+  color: #fff;
+  border-color: transparent;
+}
+
+@media (max-width: 640px) {
+  .type-options {
+    grid-template-columns: 1fr;
+  }
+}

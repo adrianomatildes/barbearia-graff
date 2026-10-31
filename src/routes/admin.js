@@ -53,6 +53,7 @@ adminRoutes.post('/subscribers', (req, res) => {
   const body = z.object({
     name: z.string().trim().min(2, 'Digite o nome.').max(80),
     phone,
+    type: z.enum(['plano', 'avulso']).optional(),
   }).parse(req.body);
   res.status(201).json(saveSubscriber(body));
 });

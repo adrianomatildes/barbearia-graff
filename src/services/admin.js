@@ -32,9 +32,10 @@ export function listSubscribers() {
   return db.prepare('SELECT id, name, phone FROM subscribers ORDER BY name').all();
 }
 
-export function saveSubscriber({ name, phone }) {
-  db.prepare('INSERT INTO subscribers (name, phone) VALUES (?, ?) ON CONFLICT(phone) DO UPDATE SET name = excluded.name')
-    .run(name, phone);
+export function saveSubscriber({ name, phone, type = 'plano' }) {
+  const normalizedType = type === 'avulso' ? 'avulso' : 'plano';
+  db.prepare('INSERT INTO subscribers (name, phone, type) VALUES (?, ?, ?) ON CONFLICT(phone) DO UPDATE SET name = excluded.name, type = excluded.type')
+    .run(name, phone, normalizedType);
   return { ok: true };
 }
 
