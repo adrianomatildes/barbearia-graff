@@ -1,7 +1,7 @@
 {
-  "name": "Barbearia Graff",
-  "short_name": "Graff",
-  "description": "Agende seu horário de segunda a sábado, das 8h às 21h.",
+  "name": "BairroMais",
+  "short_name": "BairroMais",
+  "description": "Encontre pet shops, lava-rápidos, barbearias e serviços locais perto de você.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BairroMais | Negócio</title>
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/business.css">
+</head>
+<body class="landing-page">
+  <div class="pole" aria-hidden="true"></div>
+  <header class="home-hero">
+    <nav class="home-topbar">
+      <div class="brand-lockup">
+        <span class="brand-mark-mini">BM</span>
+        <span>BairroMais</span>
+      </div>
+      <a class="link-btn secondary" href="/">Voltar</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="step-card" id="business-page">
+      <div class="business-header">
+        <span class="eyebrow" id="category-tag">Categoria</span>
+        <h1 id="business-name">Negócio local</h1>
+        <p id="business-description">Serviços exclusivos e atendimento rápido na sua região.</p>
+      </div>
+
+      <div class="business-grid">
+        <div class="business-card">
+          <h3>Serviços</h3>
+          <ul id="services-list"></ul>
+        </div>
+        <div class="business-card">
+          <h3>Contato</h3>
+          <p id="business-location">Cidade / Estado</p>
+          <p id="business-phone">WhatsApp</p>
+          <p id="business-hours">Horário</p>
+          <a id="business-button" class="cta" href="https://wa.me/5511999999999" target="_blank" rel="noreferrer">Agendar via WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const businessData = {
+      'pet-shop': {
+        name: 'Pet Shop BairroMais',
+        category: 'Pet Shop',
+        description: 'Banho, tosa, higiene e atendimento para o seu pet com carinho.',
+        location: 'São Paulo - SP',
+        phone: '+55 11 99999-0001',
+        whatsapp: '5511999990001',
+        hours: 'Segunda a Sábado · 08:00 às 18:00',
+        services: ['Banho e tosa', 'Higiene pet', 'Consulta veterinária', 'Hotelzinho']
+      },
+      'lava-car': {
+        name: 'Lava Car Express',
+        category: 'Lava Car',
+        description: 'Limpeza completa, detalhamento e cuidado para seu carro.',
+        location: 'Rio de Janeiro - RJ',
+        phone: '+55 21 98888-0002',
+        whatsapp: '5521988880002',
+        hours: 'Todos os dias · 07:00 às 19:00',
+        services: ['Lavagem externa', 'Polimento', 'Secagem premium', 'Detalhamento']
+      },
+      'barbearia': {
+        name: 'Barbearia Club House',
+        category: 'Barbearia',
+        description: 'Corte, barba e estilo com atendimento premium.',
+        location: 'Belo Horizonte - MG',
+        phone: '+55 31 97777-0003',
+        whatsapp: '5531977770003',
+        hours: 'Segunda a Sábado · 09:00 às 20:00',
+        services: ['Corte clássico', 'Barba', 'Corte + barba', 'Hidratação']
+      },
+      'estetica': {
+        name: 'Estética Bella',
+        category: 'Estética',
+        description: 'Cuidados com estética, pele e bem-estar.',
+        location: 'Curitiba - PR',
+        phone: '+55 41 96666-0004',
+        whatsapp: '5541966660004',
+        hours: 'Segunda a Sexta · 09:00 às 19:00',
+        services: ['Limpeza de pele', 'Hidratação facial', 'Depilação', 'Massagem']
+      }
+    };
+
+    const slug = window.location.pathname.split('/').filter(Boolean).pop();
+    const data = businessData[slug] || businessData['barbearia'];
+
+    document.getElementById('category-tag').textContent = data.category;
+    document.getElementById('business-name').textContent = data.name;
+    document.getElementById('business-description').textContent = data.description;
+    document.getElementById('business-location').textContent = '📍 ' + data.location;
+    document.getElementById('business-phone').textContent = '☎️ ' + data.phone;
+    document.getElementById('business-hours').textContent = '🕒 ' + data.hours;
+    document.getElementById('business-button').href = `https://wa.me/${data.whatsapp}`;
+
+    const list = document.getElementById('services-list');
+    data.services.forEach((service) => {
+      const li = document.createElement('li');
+      li.textContent = service;
+      list.appendChild(li);
+    });
+  </script>
+</body>
+</html>

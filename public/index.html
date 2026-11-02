@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14283c">
-<title>Barbearia Graff – Agendamento</title>
+<meta name="description" content="BairroMais conecta clientes a negócios locais como pet shops, lava-rápido, barbearias, estética e serviços da sua região.">
+<title>BairroMais – Negócios locais perto de você</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,53 +17,105 @@
 <header class="home-hero">
   <nav class="home-topbar">
     <div class="brand-lockup">
-      <span class="brand-mark-mini">BG</span>
-      <span>Barbearia Graff</span>
+      <span class="brand-mark-mini">BM</span>
+      <span>BairroMais</span>
     </div>
-    <a class="link-btn secondary" href="/admin">Área da barbearia</a>
+    <a class="link-btn secondary" href="/admin">Área do comerciante</a>
   </nav>
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <span class="eyebrow">Estilo, organização e agendamento inteligente</span>
-      <h1>Seu próximo corte começa aqui.</h1>
-      <p>Agendamento rápido, atendimento premium e gestão simples para a barbearia.</p>
+      <span class="eyebrow">Mais clientes na sua região</span>
+      <h1>Seu negócio local ganha visibilidade e agenda clientes em minutos.</h1>
+      <p>Pet shops, lava-rápidos, barbearias, estética e serviços locais crescem com uma plataforma que conecta negócios e clientes por cidade, bairro e categoria.</p>
       <div class="hero-actions">
-        <a class="primary-btn" href="#app">Agendar agora</a>
-        <a class="secondary-btn" href="/admin">Painel admin</a>
+        <a class="primary-btn" href="#cadastro">Cadastrar meu negócio</a>
+        <a class="secondary-btn" href="#app">Buscar serviços</a>
       </div>
       <ul class="hero-stats">
-        <li><strong>2 min</strong><span>para agendar</span></li>
-        <li><strong>+2h</strong><span>econômicas</span></li>
-        <li><strong>1 app</strong><span>para gestão</span></li>
+        <li><strong>+10k</strong><span>negócios</span></li>
+        <li><strong>45+</strong><span>estados</span></li>
+        <li><strong>24/7</strong><span>visibilidade</span></li>
       </ul>
     </div>
 
-    <aside class="hero-card" aria-label="Resumo do serviço">
+    <aside class="hero-card" aria-label="Resumo da plataforma">
       <div class="mini-header">
-        <span>Agenda premium</span>
-        <span class="status-dot">Ao vivo</span>
+        <span>Plataforma local</span>
+        <span class="status-dot">Em alta</span>
       </div>
       <div class="service-highlight">
-        <h3>Barba + Corte</h3>
-        <p>Agendamento em poucos cliques e disponibilidade real do dia.</p>
+        <h3>Negócios que querem crescer</h3>
+        <p>Cadastre fotos, serviços, horários e receba clientes por região.</p>
       </div>
       <div class="mini-metrics">
         <div>
-          <small>Horários</small>
-          <strong>08:00–19:00</strong>
+          <small>Categorias</small>
+          <strong>Pet · Auto · Estilo</strong>
         </div>
         <div>
-          <small>Profissional</small>
-          <strong>Felipe</strong>
+          <small>Busca</small>
+          <strong>Por cidade e bairro</strong>
         </div>
       </div>
     </aside>
   </div>
 </header>
 <main>
+  <section class="step-card">
+    <h2>Negócios em destaque</h2>
+    <div class="choice-row service-grid">
+      <a class="choice-card service-card active" href="/negocio/pet-shop" data-category="Pet Shop">
+        <span>Pet Shop</span>
+        <small>Banho, tosa e cuidados</small>
+      </a>
+      <a class="choice-card service-card active" href="/negocio/lava-car" data-category="Lava Car">
+        <span>Lava Car</span>
+        <small>Lavagem, detalhamento</small>
+      </a>
+      <a class="choice-card service-card active" href="/negocio/barbearia" data-category="Barbearia">
+        <span>Barbearia</span>
+        <small>Cortes, barba e estilo</small>
+      </a>
+      <a class="choice-card service-card active" href="/negocio/estetica" data-category="Estética">
+        <span>Estética</span>
+        <small>Beleza e autocuidado</small>
+      </a>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <h2>Como funciona</h2>
+    <div class="choice-row service-grid">
+      <div class="choice-card"><span>1. Cadastre</span><small>Foto, endereço, WhatsApp e serviços</small></div>
+      <div class="choice-card"><span>2. Destaque</span><small>Configure fotos, horário e promoções</small></div>
+      <div class="choice-card"><span>3. Conecte</span><small>Clientes encontram e agendam na sua região</small></div>
+      <div class="choice-card"><span>4. Cresça</span><small>Vendas, recorrência e reputação local</small></div>
+    </div>
+  </section>
+
+  <section id="cadastro" class="step-card">
+    <h2>Cadastre seu negócio</h2>
+    <div class="f"><label for="empresa">Nome do estabelecimento</label><input id="empresa" placeholder="BairroMais Pet & Cia"></div>
+    <div class="f"><label for="categoria">Categoria</label><input id="categoria" placeholder="Pet Shop, Lava Car, Barbearia"></div>
+    <div class="f"><label for="cidade">Cidade / Estado</label><input id="cidade" placeholder="São Paulo - SP"></div>
+    <div class="f"><label for="whatsapp">WhatsApp</label><input id="whatsapp" placeholder="(11) 99999-0000"></div>
+    <button class="cta" type="button">Quero cadastrar meu negócio</button>
+  </section>
+
   <div id="app" aria-live="polite">Carregando…</div>
 </main>
 <script type="module" src="/js/client.js"></script>
+<script>
+  document.querySelectorAll('[data-category]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const categoryField = document.getElementById('categoria');
+      if (categoryField) {
+        categoryField.value = link.dataset.category;
+        categoryField.focus();
+      }
+    });
+  });
+</script>
 </body>
 </html>

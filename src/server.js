@@ -26,6 +26,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.get('/', (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get('/negocio/:slug', (req, res) => res.sendFile(path.join(publicDir, 'business.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(publicDir, 'admin.html')));
 app.use('/api/admin', adminRoutes);
 app.use('/api', publicRoutes);

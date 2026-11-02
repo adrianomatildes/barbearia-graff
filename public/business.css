@@ -1,0 +1,32 @@
+.business-header {
+  margin-bottom: 24px;
+}
+
+.business-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+}
+
+.business-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.business-card h3 {
+  margin: 0 0 16px;
+}
+
+.business-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 2;
+}
+
+@media (max-width: 860px) {
+  .business-grid {
+    grid-template-columns: 1fr;
+  }
+}
