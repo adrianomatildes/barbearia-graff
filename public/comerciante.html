@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BairroMais | Comerciante</title>
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="landing-page">
+  <div class="pole" aria-hidden="true"></div>
+  <header class="home-hero">
+    <nav class="home-topbar">
+      <div class="brand-lockup">
+        <span class="brand-mark-mini">BM</span>
+        <span>BairroMais</span>
+      </div>
+      <a class="link-btn secondary" href="/">Início</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="step-card">
+      <h2>Perfil do empreendimento</h2>
+      <div class="service-grid">
+        <div class="f"><label for="name">Nome do negócio</label><input id="name"></div>
+        <div class="f"><label for="category">Categoria</label><input id="category"></div>
+        <div class="f"><label for="city">Cidade</label><input id="city"></div>
+        <div class="f"><label for="state">Estado</label><input id="state"></div>
+        <div class="f"><label for="neighborhood">Bairro</label><input id="neighborhood"></div>
+        <div class="f"><label for="address">Endereço</label><input id="address"></div>
+        <div class="f"><label for="phone">Telefone</label><input id="phone"></div>
+        <div class="f"><label for="whatsapp">WhatsApp</label><input id="whatsapp"></div>
+        <div class="f"><label for="photoUrl">URL da foto</label><input id="photoUrl"></div>
+        <div class="f"><label for="hours">Horário</label><input id="hours"></div>
+      </div>
+      <div class="f"><label for="description">Descrição</label><textarea id="description" rows="4"></textarea></div>
+      <button class="cta" id="saveProfile">Salvar perfil</button>
+    </section>
+
+    <section class="step-card">
+      <h2>Serviços do negócio</h2>
+      <div class="service-grid">
+        <div class="f"><label for="serviceName">Nome do serviço</label><input id="serviceName"></div>
+        <div class="f"><label for="servicePrice">Preço (centavos)</label><input id="servicePrice" type="number" min="0" step="100"></div>
+        <div class="f"><label for="serviceDuration">Duração (min)</label><input id="serviceDuration" type="number" min="15" step="15" value="30"></div>
+      </div>
+      <div class="f"><label for="serviceDescription">Descrição do serviço</label><textarea id="serviceDescription" rows="3"></textarea></div>
+      <button class="cta" id="saveService">Adicionar serviço</button>
+      <div id="servicesList"></div>
+    </section>
+  </main>
+
+  <script>
+    const api = async (path, options = {}) => {
+      const res = await fetch(`/api${path}`, {
+        method: options.method || 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        body: options.body ? JSON.stringify(options.body) : undefined,
+      });
+      const data = res.status === 204 ? null : await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || 'Erro ao processar a requisição.');
+      }
+      return data;
+    };
+
+    async function loadProfile() {
+      const profile = await api('/business-profile');
+      document.getElementById('name').value = profile.name || '';
+      document.getElementById('category').value = profile.category || '';
+      document.getElementById('city').value = profile.city || '';
+      document.getElementById('state').value = profile.state || '';
+      document.getElementById('neighborhood').value = profile.neighborhood || '';
+      document.getElementById('address').value = profile.address || '';
+      document.getElementById('phone').value = profile.phone || '';
+      document.getElementById('whatsapp').value = profile.whatsapp || '';
+      document.getElementById('photoUrl').value = profile.photo_url || '';
+      document.getElementById('hours').value = profile.hours || '';
+      document.getElementById('description').value = profile.description || '';
+      loadServices();
+    }
+
+    async function loadServices() {
+      const services = await api('/business-services');
+      const list = document.getElementById('servicesList');
+      list.innerHTML = services.length ? services.map((s) => `
+        <div class="appt">
+          <div class="i">
+            <b>${s.name}</b>
+            <span>${(s.price_cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} · ${s.duration_minutes} min</span>
+          </div>
+          <button class="x" data-id="${s.id}" data-action="delete">Excluir</button>
+        </div>
+      `).join('') : '<p class="hint">Nenhum serviço cadastrado.</p>';
+
+      list.querySelectorAll('[data-action="delete"]').forEach((button) => {
+        button.onclick = async () => {
+          await api(`/business-services/${button.dataset.id}`, { method: 'DELETE' });
+          loadServices();
+        };
+      });
+    }
+
+    document.getElementById('saveProfile').onclick = async () => {
+      await api('/business-profile', {
+        method: 'PUT',
+        body: {
+          name: document.getElementById('name').value,
+          category: document.getElementById('category').value,
+          city: document.getElementById('city').value,
+          state: document.getElementById('state').value,
+          neighborhood: document.getElementById('neighborhood').value,
+          address: document.getElementById('address').value,
+          phone: document.getElementById('phone').value,
+          whatsapp: document.getElementById('whatsapp').value,
+          photo_url: document.getElementById('photoUrl').value,
+          hours: document.getElementById('hours').value,
+          description: document.getElementById('description').value,
+        },
+      });
+      alert('Perfil salvo com sucesso!');
+      loadProfile();
+    };
+
+    document.getElementById('saveService').onclick = async () => {
+      await api('/business-services', {
+        method: 'POST',
+        body: {
+          name: document.getElementById('serviceName').value,
+          description: document.getElementById('serviceDescription').value,
+          price_cents: Number(document.getElementById('servicePrice').value || 0),
+          duration_minutes: Number(document.getElementById('serviceDuration').value || 30),
+        },
+      });
+      document.getElementById('serviceName').value = '';
+      document.getElementById('serviceDescription').value = '';
+      document.getElementById('servicePrice').value = '';
+      document.getElementById('serviceDuration').value = '30';
+      loadServices();
+    };
+
+    loadProfile();
+  </script>
+</body>
+</html>

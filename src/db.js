@@ -79,13 +79,44 @@ CREATE TABLE IF NOT EXISTS appointments (
   status TEXT NOT NULL DEFAULT 'confirmed' CHECK (status IN ('confirmed','cancelled')),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS businesses (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  neighborhood TEXT NOT NULL,
+  address TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  whatsapp TEXT NOT NULL,
+  photo_url TEXT,
+  hours TEXT NOT NULL DEFAULT 'Segunda a sábado · 08:00 às 18:00',
+  slug TEXT NOT NULL UNIQUE,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS business_services (
+  id INTEGER PRIMARY KEY,
+  business_id INTEGER NOT NULL REFERENCES businesses(id),
+  name TEXT NOT NULL,
+  description TEXT,
+  price_cents INTEGER NOT NULL DEFAULT 0,
+  duration_minutes INTEGER NOT NULL DEFAULT 30,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 CREATE INDEX IF NOT EXISTS idx_appt_lookup ON appointments (barber_id, date, status);
+CREATE INDEX IF NOT EXISTS idx_business_city ON businesses (city, neighborhood, category, active);
+CREATE INDEX IF NOT EXISTS idx_business_services_business ON business_services (business_id, active);
 `);
 
 const ensureSubscriberTypeColumn = () => {
   const columns = db.prepare('PRAGMA table_info(subscribers)').all();
   if (!columns.some((col) => col.name === 'type')) {
-    db.exec("ALTER TABLE subscribers ADD COLUMN type TEXT NOT NULL DEFAULT 'plano' CHECK (type IN ('plano','avulso'));");
+    db.exec("ALTER TABLE subscribers ADD COLUMN type TEXT NOT NULL DEFAULT 'plano' CHECK (type IN ('plano','avulso')); ");
   }
 };
 

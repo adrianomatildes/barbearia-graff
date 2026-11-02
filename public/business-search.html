@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BairroMais | Buscar negócios</title>
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="landing-page">
+  <div class="pole" aria-hidden="true"></div>
+  <header class="home-hero">
+    <nav class="home-topbar">
+      <div class="brand-lockup">
+        <span class="brand-mark-mini">BM</span>
+        <span>BairroMais</span>
+      </div>
+      <a class="link-btn secondary" href="/">Voltar</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="step-card">
+      <h2>Buscar por cidade, bairro ou categoria</h2>
+      <div class="service-grid">
+        <div class="f"><label for="city">Cidade</label><input id="city" placeholder="São Paulo"></div>
+        <div class="f"><label for="bairro">Bairro</label><input id="bairro" placeholder="Centro"></div>
+        <div class="f"><label for="categoria">Categoria</label><input id="categoria" placeholder="Pet Shop"></div>
+      </div>
+      <button class="cta" id="buscar">Buscar negócios</button>
+    </section>
+
+    <section class="step-card">
+      <div id="results"></div>
+    </section>
+  </main>
+
+  <script>
+    const results = document.getElementById('results');
+    async function buscar() {
+      const qs = new URLSearchParams({
+        city: document.getElementById('city').value,
+        neighborhood: document.getElementById('bairro').value,
+        category: document.getElementById('categoria').value,
+      }).toString();
+
+      const res = await fetch(`/api/businesses?${qs}`);
+      const data = await res.json();
+
+      if (!data.length) {
+        results.innerHTML = '<p class="hint">Nenhum negócio encontrado nesta região.</p>';
+        return;
+      }
+
+      results.innerHTML = data.map((item) => `
+        <div class="appt business-result">
+          <div class="i">
+            <b>${item.name}</b>
+            <span>${item.category} · ${item.city} / ${item.state}</span>
+            <span>${item.neighborhood} · ${item.address}</span>
+          </div>
+          <a class="x" href="/negocio/${item.slug}">Ver perfil</a>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('buscar').onclick = buscar;
+  </script>
+</body>
+</html>
